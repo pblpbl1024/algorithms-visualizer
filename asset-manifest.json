@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.css": "/algorithms-visualizer/static/css/main.6758f7d8.chunk.css",
-    "main.js": "/algorithms-visualizer/static/js/main.cde1d539.chunk.js",
-    "main.js.map": "/algorithms-visualizer/static/js/main.cde1d539.chunk.js.map",
+    "main.css": "/algorithms-visualizer/static/css/main.2db5148c.chunk.css",
+    "main.js": "/algorithms-visualizer/static/js/main.2ddfeadb.chunk.js",
+    "main.js.map": "/algorithms-visualizer/static/js/main.2ddfeadb.chunk.js.map",
     "runtime-main.js": "/algorithms-visualizer/static/js/runtime-main.07a72a34.js",
     "runtime-main.js.map": "/algorithms-visualizer/static/js/runtime-main.07a72a34.js.map",
-    "static/js/2.2c7c1f57.chunk.js": "/algorithms-visualizer/static/js/2.2c7c1f57.chunk.js",
-    "static/js/2.2c7c1f57.chunk.js.map": "/algorithms-visualizer/static/js/2.2c7c1f57.chunk.js.map",
+    "static/js/2.9d9acccc.chunk.js": "/algorithms-visualizer/static/js/2.9d9acccc.chunk.js",
+    "static/js/2.9d9acccc.chunk.js.map": "/algorithms-visualizer/static/js/2.9d9acccc.chunk.js.map",
     "index.html": "/algorithms-visualizer/index.html",
-    "static/css/main.6758f7d8.chunk.css.map": "/algorithms-visualizer/static/css/main.6758f7d8.chunk.css.map",
-    "static/js/2.2c7c1f57.chunk.js.LICENSE.txt": "/algorithms-visualizer/static/js/2.2c7c1f57.chunk.js.LICENSE.txt",
+    "static/css/main.2db5148c.chunk.css.map": "/algorithms-visualizer/static/css/main.2db5148c.chunk.css.map",
+    "static/js/2.9d9acccc.chunk.js.LICENSE.txt": "/algorithms-visualizer/static/js/2.9d9acccc.chunk.js.LICENSE.txt",
     "static/media/index.css": "/algorithms-visualizer/static/media/font-light.3f73af4e.otf",
     "static/media/profile.aec772f7.png": "/algorithms-visualizer/static/media/profile.aec772f7.png"
   },
   "entrypoints": [
     "static/js/runtime-main.07a72a34.js",
-    "static/js/2.2c7c1f57.chunk.js",
-    "static/css/main.6758f7d8.chunk.css",
-    "static/js/main.cde1d539.chunk.js"
+    "static/js/2.9d9acccc.chunk.js",
+    "static/css/main.2db5148c.chunk.css",
+    "static/js/main.2ddfeadb.chunk.js"
   ]
 }
