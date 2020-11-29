@@ -1,18 +1,22 @@
 import React, { Component } from "react";
 import {Button, Modal} from "react-bootstrap";
-import * as sortingAlgorithms from "./MergeSort";
+import * as sortingAlgorithms from "./Algorithms";
 
 class Sort extends Component {
 
     state = { array: [], anim: [], btnActive: true, showModal: true }
-    animSpeed = 10;
+    animDelay = 4;
+    timeouts = [];
 
     componentDidMount() {
         this.resetArray(); 
     }
 
     componentWillUnmount() {
-        clearTimeout(this.timeout);
+        for(var i = 0; i < this.timeouts.length; i++)
+        {
+            clearTimeout(this.timeouts[i]);
+        }
     }
 
     hideModal = () => {
@@ -21,8 +25,7 @@ class Sort extends Component {
 
     //initialize array to random values
     resetArray = () => {
-        const width = window.innerWidth - 150;
-        const n = Math.max(width/10, 10);
+        const n = 180;
         const array = [];
         for(let i = 0; i < n; i++)
         {
@@ -31,39 +34,62 @@ class Sort extends Component {
         this.setState({array: array});
     }
 
-    bubbleSort = () => {
+    playAnimations = () => 
+    {
+        //these algorithms do the sorting on a copy of the official array, then push all of the modification data to the animation array
+        //the animation array is read here and changes are reflected in this temp array
+        //finally, the temp array is set to the official array
+        const temp = this.state.array.slice();
+        for(let i = 0; i < this.state.anim.length; i++)
+        {
+            const arrayBars = document.getElementsByClassName("array-bar");
+            const [a, b, action] = this.state.anim[i];
+            //action: 0 = set bars to blue, 1 = set bars to red, 2 = update a single value, 3 = swap two values
+            switch(action)
+            {
+                case 0:
+                    this.timeouts.push(setTimeout(() => {
+                        if(a !== -1) arrayBars[a].style.backgroundColor = "lightskyblue"; 
+                        if(b !== -1) arrayBars[b].style.backgroundColor = "lightskyblue"; 
+                    }, i*this.animDelay));
+                break;
+                case 1:
+                    this.timeouts.push(setTimeout(() => {
+                        if(a !== -1) arrayBars[a].style.backgroundColor = "crimson"; 
+                        if(b !== -1) arrayBars[b].style.backgroundColor = "crimson"; 
+                    }, i*this.animDelay));
+                break;
+                case 2:
+                    this.timeouts.push(setTimeout(() => {
+                        temp[a] = b;
+                        arrayBars[a].style.height = `${b/15}vh`;
+                    }, i*this.animDelay));
+                break;
+                case 3:
+                    this.timeouts.push(setTimeout(() => {
+                        var x = temp[a]; temp[a] = temp[b]; temp[b] = x;
+                        arrayBars[a].style.height = `${temp[a]/15}vh`;
+                        arrayBars[b].style.height = `${temp[b]/15}vh`;
+                    }, i*this.animDelay));
+                break;
+            }
+        }
+        this.timeouts.push(this.timeout = setTimeout(() => {
+            this.setState({btnActive: true, array: temp});
+        }, this.state.anim.length*this.animDelay));
         
+    }
+
+    bubbleSort = () => {
+        this.setState({anim: [], btnActive: false});
+        sortingAlgorithms.bubbleSort(this.state.array.slice(), this.state.anim, 0, this.state.array.length-1);
+        this.playAnimations();
     }
 
     mergeSort = () => {
         this.setState({anim: [], btnActive: false});
         sortingAlgorithms.mergeSort(this.state.array.slice(), this.state.anim, 0, this.state.array.length-1);
-        console.log(this.state.array);
-        console.log(this.state.anim);
-        const temp = []; for(let i = 0; i < this.state.array.length; i++) temp.push(0);
-        for(let i = 0; i < this.state.anim.length; i++)
-        {
-            const arrayBars = document.getElementsByClassName("array-bar");
-            const [a, b, action] = this.state.anim[i];
-            if(action !== 2)
-            {
-                const color = action === 1 ? "crimson" : "lightskyblue";
-                setTimeout(() => {
-                    if(a !== -1) arrayBars[a].style.backgroundColor = color; 
-                    if(b !== -1) arrayBars[b].style.backgroundColor = color; 
-                }, i*this.animSpeed);
-            }
-            else
-            {
-                setTimeout(() => {
-                    temp[a] = b;
-                    arrayBars[a].style.height = `${b/15}vh`;
-                }, i*this.animSpeed);
-            }
-        }
-        this.timeout = setTimeout(() => {
-            this.setState({btnActive: true, array: temp});
-        }, this.state.anim.length*this.animSpeed);
+        this.playAnimations();
     }   
 
     quickSort = () => {
@@ -71,10 +97,6 @@ class Sort extends Component {
     }
 
     heapSort = () => {
-        
-    }
-
-    changeArraySize = () => {
         
     }
 
@@ -94,16 +116,26 @@ class Sort extends Component {
                     <h5>Bubble Sort</h5>
                     <p>A simple sorting algorithm that repeatedly steps through the list, compares adjacent elements 
                         and swaps them if they are in the wrong order.</p>
+                    <hr/>
+                    <h5>Merge Sort</h5>
+                    <p>A divide and conquer sorting algorithm that merges two sorted arrays in O(n) time.</p>
+                    <hr/>
+                    <h5>Heap Sort</h5>
+                    <p>A comparison-based sorting algorithm that reduces unsorted regions by extracting the largest element from it and 
+                        inserting it into the sorted regions.</p>
+                    <hr/>
+                    <h5>Quick Sort</h5>
+                    <p>A divide and conquer sorting algorithm that uses a pivot to sorts subarrays recursively.</p>
                     </Modal.Body>
                     <Modal.Footer>
                     <Button onClick={this.hideModal}>Close</Button>
                     </Modal.Footer>
                 </Modal>
-                <div className="array-container">
+                <div className="array-bar-fake" style={{ height: `${650/15}vh` }}></div>
                 {array.map((value, idx) => (
                     <div className="array-bar" key={idx} style={{ height: `${value/15}vh` }}></div>
                 ))}
-                </div>
+                <div className="array-bar-fake" style={{ height: `${650/15}vh` }}></div>
                 <hr/>
                 <Button variant="success" disabled={!this.state.btnActive} onClick={this.resetArray}>New Array</Button>
                 <Button variant="primary" disabled={!this.state.btnActive} onClick={this.bubbleSort}>Bubble Sort</Button>

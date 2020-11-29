@@ -36,16 +36,20 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 20px;
 }
 
-.array-container {
-  margin: 40px;
-  height: 300px;
-}
-
 .array-bar {
-  width: 5px;
+  width: .3vw;
   background-color: lightskyblue;
   display: inline-block;
-  margin: 0px 2px;
+  margin: 0px .1vw;
+  position: relative;
+}
+
+.array-bar-fake {
+  width: .3vw;
+  background-color: lightskyblue;
+  opacity: 0%;
+  display: inline-block;
+  margin: 0px .1vw;
   position: relative;
 }
 

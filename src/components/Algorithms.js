@@ -1,4 +1,4 @@
-//a merge sort algorithm I wrote to demonstrate its capability for the visualizer.
+//merge sort function
 export function mergeSort(array, anim, l, r) {
     //base case: the segment is length 1
     if(l == r) return;
@@ -15,6 +15,7 @@ export function mergeSort(array, anim, l, r) {
         var leftAnim = x == lft.length-1 ? -1 : l+x;
         var rightAnim = y == rit.length-1 ? -1 : mid+1+y;
         anim.push([leftAnim, rightAnim, 1]); 
+        //update the pointer element's height
         if (lft[x] <= rit[y]) 
         {
             anim.push([i, lft[x], 2]);
@@ -28,3 +29,25 @@ export function mergeSort(array, anim, l, r) {
         anim.push([leftAnim, rightAnim, 0]);
     }
 }
+
+//bubble sort function
+export function bubbleSort(array, anim, l, r) {
+    //moves the largest element to the top during each sweep of the algorithm
+    for(var i = array.length-1; i > 0; i--)
+    {
+        for(var j = 0; j < i; j++)
+        {
+            //updates colour of this element and the one next to it
+            anim.push([j, j+1, 1]);
+            if(array[j] > array[j+1])
+            {
+                var x = array[j]; array[j] = array[j+1]; array[j+1] = x;
+                //swap two values
+                anim.push([j, j+1, 3]);
+            }
+            //reset the colours
+            anim.push([j, j+1, 0]);
+        }
+    }
+}
+
