@@ -23,12 +23,11 @@ h1, h2, h3, h4, h5, h6 {
   font-family: "FontBold";
 }
 
-.profile {
+.icon {
   border-radius: 50%;
-  height: 40vmin;
-  min-height: 80px;
-  max-height: 200px;
+  height: 50px;
   margin-bottom: .5rem;
+  margin-bottom: 0px;
 }
 
 .navbar {
@@ -37,19 +36,15 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .array-bar {
-  width: .3vw;
   background-color: lightskyblue;
   display: inline-block;
-  margin: 0px .1vw;
   position: relative;
 }
 
 .array-bar-fake {
-  width: .3vw;
   background-color: lightskyblue;
   opacity: 0%;
   display: inline-block;
-  margin: 0px .1vw;
   position: relative;
 }
 

@@ -4,11 +4,15 @@ import * as sortingAlgorithms from "./Algorithms";
 
 class Sort extends Component {
 
-    state = { array: [], anim: [], btnActive: true, showModal: true, arraySize: 180, animDelay: 3 }
     timeouts = [];
+
+    state = { array: [], anim: [], btnActive: true, showModal: true, arraySize: 180, animDelay: 3, 
+        arrayWidth: (window.innerWidth-80)/(180*2), arrayMargin: (window.innerWidth-80)/(180*4) }
 
     componentDidMount() {
         this.resetArray(); 
+        window.addEventListener('resize', this.updWidth);
+        console.log(window.innerWidth*0.003);
     }
 
     componentWillUnmount() {
@@ -16,6 +20,10 @@ class Sort extends Component {
         {
             clearTimeout(this.timeouts[i]);
         }
+        window.removeEventListener('resize', this.updWidth);
+    }
+    updWidth = () => {
+        this.setState({ arrayWidth: (window.innerWidth-80)/(180*2), arrayMargin: (window.innerWidth-80)/(180*4) });
     }
 
     hideModal = () => {
@@ -58,14 +66,14 @@ class Sort extends Component {
                 case 2:
                     this.timeouts.push(setTimeout(() => {
                         this.state.array[a] = b;
-                        arrayBars[a].style.height = `${b/15}vh`;
+                        arrayBars[a].style.height = `${b/10}vh`;
                     }, i*this.state.animDelay));
                 break;
                 case 3:
                     this.timeouts.push(setTimeout(() => {
                         var x = this.state.array[a]; this.state.array[a] = this.state.array[b]; this.state.array[b] = x;
-                        arrayBars[a].style.height = `${this.state.array[a]/15}vh`;
-                        arrayBars[b].style.height = `${this.state.array[b]/15}vh`;
+                        arrayBars[a].style.height = `${this.state.array[a]/10}vh`;
+                        arrayBars[b].style.height = `${this.state.array[b]/10}vh`;
                     }, i*this.state.animDelay));
                 break;
                 default:
@@ -142,17 +150,18 @@ class Sort extends Component {
                         inserting it into the sorted regions.</p>
                     <hr/>
                     <h5>Quick Sort</h5>
-                    <p>A divide and conquer sorting algorithm that uses a pivot to sorts subarrays recursively.</p>
+                    <p>A divide and conquer sorting algorithm that uses a pivot to sort subarrays recursively.</p>
                     </Modal.Body>
                     <Modal.Footer>
                     <Button onClick={this.hideModal}>Close</Button>
                     </Modal.Footer>
                 </Modal>
-                <div className="array-bar-fake" style={{ height: `${650/15}vh` }}></div>
+                <div className="array-bar-fake" style={{ height: `${650/10}vh` }}></div>
                 {array.map((value, idx) => (
-                    <div className="array-bar" key={idx} style={{ height: `${value/15}vh` }}></div>
+                    <div className="array-bar" key={idx} style={{ height: `${value/10}vh`, width: this.state.arrayWidth, 
+                    margin: `0px ${this.state.arrayMargin}px` }}></div>
                 ))}
-                <div className="array-bar-fake" style={{ height: `${650/15}vh` }}></div>
+                <div className="array-bar-fake" style={{ height: `${650/10}vh`  }}></div>
                 <hr/>
                 <div style={{display: "inline-block"}}>
                     <Button variant="success" disabled={!this.state.btnActive} onClick={this.resetArray}>New Array</Button>
@@ -180,6 +189,11 @@ class Sort extends Component {
 //random int in the range [min, max]
 function randomInt(min, max) {
     return Math.floor(Math.random() * (max-min+1) + min);
+}
+
+//round down a number to the nearest 0.001
+function roundDown(x) {
+    return Math.floor(1000*x)/1000;
 }
 
 export default Sort;
