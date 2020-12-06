@@ -8,11 +8,12 @@ class Sort extends Component {
 
     state = { array: [], anim: [], btnActive: true, showModal: true, arraySize: 180, animDelay: 3, 
         arrayWidth: (window.innerWidth-80)/(180*2), arrayMargin: (window.innerWidth-80)/(180*4) }
+    
+    decreasing = false;
 
     componentDidMount() {
         this.resetArray(); 
         window.addEventListener('resize', this.updWidth);
-        console.log(window.innerWidth*0.003);
     }
 
     componentWillUnmount() {
@@ -22,6 +23,7 @@ class Sort extends Component {
         }
         window.removeEventListener('resize', this.updWidth);
     }
+
     updWidth = () => {
         this.setState({ arrayWidth: (window.innerWidth-80)/(180*2), arrayMargin: (window.innerWidth-80)/(180*4) });
     }
@@ -35,7 +37,7 @@ class Sort extends Component {
         const array = [];
         for(let i = 0; i < this.state.arraySize; i++)
         {
-            array.push(randomInt(100, 600));
+            array.push(randomInt(100, 500));
         }
         this.setState({array: array});
     }
@@ -76,6 +78,9 @@ class Sort extends Component {
                         arrayBars[b].style.height = `${this.state.array[b]/10}vh`;
                     }, i*this.state.animDelay));
                 break;
+                case 4:
+
+                break;
                 default:
                 break;
             }
@@ -88,13 +93,13 @@ class Sort extends Component {
 
     bubbleSort = () => {
         this.setState({anim: [], btnActive: false});
-        sortingAlgorithms.bubbleSort(this.state.array.slice(), this.state.anim, 0, this.state.array.length-1);
+        sortingAlgorithms.bubbleSort(this.state.array.slice(), this.state.anim, this.decreasing);
         this.playAnimations();
     }
 
     mergeSort = () => {
         this.setState({anim: [], btnActive: false});
-        sortingAlgorithms.mergeSort(this.state.array.slice(), this.state.anim, 0, this.state.array.length-1);
+        sortingAlgorithms.mergeSort(this.state.array.slice(), this.state.anim, 0, this.state.array.length-1, this.decreasing);
         this.playAnimations();
     }   
 
@@ -121,6 +126,11 @@ class Sort extends Component {
         this.setState({arraySize: event.target.value});
     }
 
+    changedDecreasing = (event) => {
+        this.decreasing = event.target.checked;
+        console.log(this.decreasing);
+    }
+
     //event for changing the animation delay
     changedDelay = (event) => {
         this.setState({animDelay: event.target.value});
@@ -130,7 +140,7 @@ class Sort extends Component {
         const { array } = this.state;
         return (
             <div>
-                <Modal show={this.state.showModal}
+                <Modal onHide={this.hideModal} show={this.state.showModal}
                     size="lg"
                     aria-labelledby="contained-modal-title-vcenter"
                     centered>
@@ -156,12 +166,12 @@ class Sort extends Component {
                     <Button onClick={this.hideModal}>Close</Button>
                     </Modal.Footer>
                 </Modal>
-                <div className="array-bar-fake" style={{ height: `${650/10}vh` }}></div>
+                <div className="array-bar-fake" style={{ height: `${500/10}vh` }}></div>
                 {array.map((value, idx) => (
                     <div className="array-bar" key={idx} style={{ height: `${value/10}vh`, width: this.state.arrayWidth, 
                     margin: `0px ${this.state.arrayMargin}px` }}></div>
                 ))}
-                <div className="array-bar-fake" style={{ height: `${650/10}vh`  }}></div>
+                <div className="array-bar-fake" style={{ height: `${500/10}vh`  }}></div>
                 <hr/>
                 <div style={{display: "inline-block"}}>
                     <Button variant="success" disabled={!this.state.btnActive} onClick={this.resetArray}>New Array</Button>
@@ -170,7 +180,16 @@ class Sort extends Component {
                     <Button variant="secondary" disabled={!this.state.btnActive} onClick={this.quickSort}>Quick Sort</Button>
                     <Button variant="dark" disabled={!this.state.btnActive} onClick={this.heapSort}>Heap Sort</Button>
                     <Button variant="danger" disabled={this.state.btnActive} onClick={this.stopAlgorithm}>Stop Algorithm</Button>
+
                     <Form>
+                    <Form.Check 
+                        type="checkbox" 
+                        label="Sort in decreasing order"
+                        onChange={this.changedDecreasing}
+                        disabled={!this.state.btnActive}
+                        style={{margin: 5}}
+                    />
+
                     <Form.Group controlId="formBasicRange">
                         <Form.Label>Array Size: {this.state.arraySize}</Form.Label>
                         <Form.Control disabled={!this.state.btnActive} type="range" defaultValue={this.state.arraySize} 
