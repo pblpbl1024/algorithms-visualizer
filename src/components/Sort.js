@@ -1,15 +1,18 @@
 import React, { Component } from "react";
-import {Button, Modal, Form} from "react-bootstrap";
+import {Button, Modal, Form, OverlayTrigger, Tooltip} from "react-bootstrap";
 import * as sortingAlgorithms from "./Algorithms";
 
 class Sort extends Component {
 
     timeouts = [];
-
-    state = { array: [], anim: [], btnActive: true, showModal: true, arraySize: 180, animDelay: 3, 
-        arrayWidth: (window.innerWidth-80)/(180*2), arrayMargin: (window.innerWidth-80)/(180*4) }
-    
     decreasing = false;
+    showMergeFocus = false;
+    endMargin = 40;
+    maxArraySize = 200;
+
+    state = { array: [], anim: [], btnActive: true, showModal: true, arraySize: this.maxArraySize, animDelay: 3, 
+        arrayWidth: (window.innerWidth-this.endMargin*2)/(this.maxArraySize*2), 
+        arrayMargin: (window.innerWidth-this.endMargin*2)/(this.maxArraySize*4) }
 
     componentDidMount() {
         this.resetArray(); 
@@ -25,7 +28,7 @@ class Sort extends Component {
     }
 
     updWidth = () => {
-        this.setState({ arrayWidth: (window.innerWidth-80)/(180*2), arrayMargin: (window.innerWidth-80)/(180*4) });
+        this.setState({ arrayWidth: (window.innerWidth-this.endMargin*2)/(this.maxArraySize*2), arrayMargin: (window.innerWidth-this.endMargin*2)/(this.maxArraySize*4) });
     }
 
     hideModal = () => {
@@ -53,33 +56,44 @@ class Sort extends Component {
             //action: 0 = set bars to blue, 1 = set bars to red, 2 = update a single value, 3 = swap two values
             switch(action)
             {
-                case 0:
+                case 0: //unselect two bars
                     this.timeouts.push(setTimeout(() => {
                         if(a !== -1) arrayBars[a].style.backgroundColor = "lightskyblue"; 
                         if(b !== -1) arrayBars[b].style.backgroundColor = "lightskyblue"; 
                     }, i*this.state.animDelay));
                 break;
-                case 1:
+                case 1: //select two bars
                     this.timeouts.push(setTimeout(() => {
                         if(a !== -1) arrayBars[a].style.backgroundColor = "crimson"; 
                         if(b !== -1) arrayBars[b].style.backgroundColor = "crimson"; 
                     }, i*this.state.animDelay));
                 break;
-                case 2:
+                case 2: //update height of one bar
                     this.timeouts.push(setTimeout(() => {
                         this.state.array[a] = b;
                         arrayBars[a].style.height = `${b/10}vh`;
                     }, i*this.state.animDelay));
                 break;
-                case 3:
+                case 3: //swap heights of two bars
                     this.timeouts.push(setTimeout(() => {
                         var x = this.state.array[a]; this.state.array[a] = this.state.array[b]; this.state.array[b] = x;
                         arrayBars[a].style.height = `${this.state.array[a]/10}vh`;
                         arrayBars[b].style.height = `${this.state.array[b]/10}vh`;
                     }, i*this.state.animDelay));
                 break;
-                case 4:
-
+                case 4: //update the segment which the merge sort algorithm is working on
+                this.timeouts.push(setTimeout(() => {
+                    for(let i = 0; i < arrayBars.length; i++)
+                    {
+                        if(a <= i && i <= b) arrayBars[i].style.opacity = `100%`;
+                        else arrayBars[i].style.opacity = `30%`;
+                    }
+                }, i*this.state.animDelay));
+                break;
+                case 5: //update a bar to lightgreen
+                    this.timeouts.push(setTimeout(() => {
+                        arrayBars[a].style.backgroundColor = "lime"; 
+                    }, i*this.state.animDelay));
                 break;
                 default:
                 break;
@@ -99,7 +113,7 @@ class Sort extends Component {
 
     mergeSort = () => {
         this.setState({anim: [], btnActive: false});
-        sortingAlgorithms.mergeSort(this.state.array.slice(), this.state.anim, 0, this.state.array.length-1, this.decreasing);
+        sortingAlgorithms.mergeSort(this.state.array.slice(), this.state.anim, 0, this.state.array.length-1, this.decreasing, this.showMergeFocus);
         this.playAnimations();
     }   
 
@@ -107,14 +121,14 @@ class Sort extends Component {
         
     }
 
-    heapSort = () => {
-        
-    }
-
     stopAlgorithm = () => {
         const arrayBars = document.getElementsByClassName("array-bar");
-        for(var i = 0; i < arrayBars.length; i++) arrayBars[i].style.backgroundColor = "lightskyblue"; 
-        for(var i = 0; i < this.timeouts.length; i++)
+        for(let i = 0; i < arrayBars.length; i++) 
+        {
+            arrayBars[i].style.backgroundColor = "lightskyblue"; 
+            arrayBars[i].style.opacity = `100%`;
+        }
+        for(let i = 0; i < this.timeouts.length; i++)
         {
             clearTimeout(this.timeouts[i]);
         }
@@ -128,7 +142,10 @@ class Sort extends Component {
 
     changedDecreasing = (event) => {
         this.decreasing = event.target.checked;
-        console.log(this.decreasing);
+    }
+    
+    changedshowMergeFocus = (event) => {
+        this.showMergeFocus = event.target.checked;
     }
 
     //event for changing the animation delay
@@ -153,11 +170,7 @@ class Sort extends Component {
                         and swaps them if they are in the wrong order.</p>
                     <hr/>
                     <h5>Merge Sort</h5>
-                    <p>A divide and conquer sorting algorithm that merges two sorted arrays in O(n) time.</p>
-                    <hr/>
-                    <h5>Heap Sort</h5>
-                    <p>A comparison-based sorting algorithm that reduces unsorted regions by extracting the largest element from it and 
-                        inserting it into the sorted regions.</p>
+                    <p>A divide and conquer sorting algorithm that uses O(n) merging of two sorted segments.</p>
                     <hr/>
                     <h5>Quick Sort</h5>
                     <p>A divide and conquer sorting algorithm that uses a pivot to sort subarrays recursively.</p>
@@ -171,29 +184,44 @@ class Sort extends Component {
                     <div className="array-bar" key={idx} style={{ height: `${value/10}vh`, width: this.state.arrayWidth, 
                     margin: `0px ${this.state.arrayMargin}px` }}></div>
                 ))}
-                <div className="array-bar-fake" style={{ height: `${500/10}vh`  }}></div>
+                <div className="array-bar-fake" style={{ height: `${500/10}vh` }}></div>
                 <hr/>
                 <div style={{display: "inline-block"}}>
                     <Button variant="success" disabled={!this.state.btnActive} onClick={this.resetArray}>New Array</Button>
                     <Button variant="primary" disabled={!this.state.btnActive} onClick={this.bubbleSort}>Bubble Sort</Button>
                     <Button variant="info" disabled={!this.state.btnActive} onClick={this.mergeSort}>Merge Sort</Button>
-                    <Button variant="secondary" disabled={!this.state.btnActive} onClick={this.quickSort}>Quick Sort</Button>
-                    <Button variant="dark" disabled={!this.state.btnActive} onClick={this.heapSort}>Heap Sort</Button>
+                    <Button variant="dark" disabled={!this.state.btnActive} onClick={this.quickSort}>Quick Sort</Button>
                     <Button variant="danger" disabled={this.state.btnActive} onClick={this.stopAlgorithm}>Stop Algorithm</Button>
 
                     <Form>
                     <Form.Check 
+                        inline
                         type="checkbox" 
                         label="Sort in decreasing order"
                         onChange={this.changedDecreasing}
                         disabled={!this.state.btnActive}
-                        style={{margin: 5}}
                     />
+                    <OverlayTrigger
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={<Tooltip>
+                        Highlights the segment of the array processed by each recursive call of merge sort
+                        as well as the current element being adjusted.
+                      </Tooltip>}
+                    >
+                        <Form.Check 
+                        inline
+                        type="checkbox" 
+                        label="Show focus of merge sort"
+                        onChange={this.changedshowMergeFocus}
+                        disabled={!this.state.btnActive}
+                    />
+                    </OverlayTrigger>
 
                     <Form.Group controlId="formBasicRange">
                         <Form.Label>Array Size: {this.state.arraySize}</Form.Label>
                         <Form.Control disabled={!this.state.btnActive} type="range" defaultValue={this.state.arraySize} 
-                        min="10" max="180" tooltip="auto" onChange = {(event) => this.changedSize(event)}/>
+                        min="10" max={this.maxArraySize} tooltip="auto" onChange = {(event) => this.changedSize(event)}/>
                         <Form.Label>Animation Delay: {this.state.animDelay} ms</Form.Label>
                         <Form.Control disabled={!this.state.btnActive} type="range" defaultValue={this.state.animDelay} 
                         min="1" max="200" tooltip="auto" onChange = {(event) => this.changedDelay(event)}/>
@@ -209,10 +237,4 @@ class Sort extends Component {
 function randomInt(min, max) {
     return Math.floor(Math.random() * (max-min+1) + min);
 }
-
-//round down a number to the nearest 0.001
-function roundDown(x) {
-    return Math.floor(1000*x)/1000;
-}
-
 export default Sort;

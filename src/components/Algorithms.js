@@ -1,10 +1,14 @@
 //merge sort function
-export function mergeSort(array, anim, l, r, dec) {
+export function mergeSort(array, anim, l, r, dec, focus) {
+    //update focus of mergesort
+    if(focus) anim.push([l, r, 4]);
     //base case: the segment is length 1
     if(l === r) return;
     var mid = Math.floor((l+r)/2);
     //otherwise, sort the left and right segments
-    mergeSort(array, anim, l, mid, dec); mergeSort(array, anim, mid+1, r, dec);
+    mergeSort(array, anim, l, mid, dec, focus); mergeSort(array, anim, mid+1, r, dec, focus);
+    //update focus of mergesort
+    if(focus) anim.push([l, r, 4]);
     //combine sorted segments
     const lft = [], rit = []; 
     
@@ -20,6 +24,7 @@ export function mergeSort(array, anim, l, r, dec) {
         var leftAnim = x === lft.length-1 ? -1 : l+x;
         var rightAnim = y === rit.length-1 ? -1 : mid+1+y;
         anim.push([leftAnim, rightAnim, 1]); 
+        if(focus) anim.push([i, i, 5]);
         //update the pointer element's height
         if(dec)
         {
@@ -48,6 +53,7 @@ export function mergeSort(array, anim, l, r, dec) {
             }
         }
         anim.push([leftAnim, rightAnim, 0]);
+        anim.push([i, i, 0]);
     }
 }
 
