@@ -1,26 +1,29 @@
 import React, { Component } from "react";
 import {Button, Modal, Form, OverlayTrigger, Tooltip} from "react-bootstrap";
-import * as sortingAlgorithms from "./Algorithms";
+import * as algos from "./Algorithms";
 
 class Sort extends Component {
 
+    //constants and other stuff
     timeouts = [];
     decreasing = false;
     showMergeFocus = false;
+    showQuickFocus = false;
     endMargin = 40;
     maxArraySize = 200;
+
 
     state = { array: [], anim: [], btnActive: true, showModal: true, arraySize: this.maxArraySize, animDelay: 3, 
         arrayWidth: (window.innerWidth-this.endMargin*2)/(this.maxArraySize*2), 
         arrayMargin: (window.innerWidth-this.endMargin*2)/(this.maxArraySize*4) }
 
     componentDidMount() {
-        this.resetArray(); 
+        this.resetArray();
         window.addEventListener('resize', this.updWidth);
     }
 
     componentWillUnmount() {
-        for(var i = 0; i < this.timeouts.length; i++)
+        for(let i = 0; i < this.timeouts.length; i++)
         {
             clearTimeout(this.timeouts[i]);
         }
@@ -49,76 +52,69 @@ class Sort extends Component {
     {
         //these algorithms do the sorting on a copy of the official array, then push all of the modification data to the animation array
         //the animation array is read here and changes are made to the original array
-        for(let i = 0; i < this.state.anim.length; i++)
-        {
+        for(let i = 0; i < this.state.anim.length; i++) {
             const arrayBars = document.getElementsByClassName("array-bar");
-            const [a, b, action] = this.state.anim[i];
-            //action: 0 = set bars to blue, 1 = set bars to red, 2 = update a single value, 3 = swap two values
-            switch(action)
+            const colours = ["lightskyblue", "crimson", "lime"];
+            const [cmd, a, b] = this.state.anim[i];
+            if (colours.includes(cmd))
             {
-                case 0: //unselect two bars
-                    this.timeouts.push(setTimeout(() => {
-                        if(a !== -1) arrayBars[a].style.backgroundColor = "lightskyblue"; 
-                        if(b !== -1) arrayBars[b].style.backgroundColor = "lightskyblue"; 
-                    }, i*this.state.animDelay));
-                break;
-                case 1: //select two bars
-                    this.timeouts.push(setTimeout(() => {
-                        if(a !== -1) arrayBars[a].style.backgroundColor = "crimson"; 
-                        if(b !== -1) arrayBars[b].style.backgroundColor = "crimson"; 
-                    }, i*this.state.animDelay));
-                break;
-                case 2: //update height of one bar
-                    this.timeouts.push(setTimeout(() => {
-                        this.state.array[a] = b;
-                        arrayBars[a].style.height = `${b/10}vh`;
-                    }, i*this.state.animDelay));
-                break;
-                case 3: //swap heights of two bars
-                    this.timeouts.push(setTimeout(() => {
-                        var x = this.state.array[a]; this.state.array[a] = this.state.array[b]; this.state.array[b] = x;
-                        arrayBars[a].style.height = `${this.state.array[a]/10}vh`;
-                        arrayBars[b].style.height = `${this.state.array[b]/10}vh`;
-                    }, i*this.state.animDelay));
-                break;
-                case 4: //update the segment which the merge sort algorithm is working on
                 this.timeouts.push(setTimeout(() => {
-                    for(let i = 0; i < arrayBars.length; i++)
-                    {
-                        if(a <= i && i <= b) arrayBars[i].style.opacity = `100%`;
-                        else arrayBars[i].style.opacity = `30%`;
-                    }
+                    if(a != -1) arrayBars[a].style.backgroundColor = cmd;
+                    if(b != -1) arrayBars[b].style.backgroundColor = cmd;
                 }, i*this.state.animDelay));
-                break;
-                case 5: //update a bar to lightgreen
-                    this.timeouts.push(setTimeout(() => {
-                        arrayBars[a].style.backgroundColor = "lime"; 
-                    }, i*this.state.animDelay));
-                break;
-                default:
-                break;
+            }
+            else
+            {
+                switch(cmd)
+                {
+                    case "update":
+                        this.timeouts.push(setTimeout(() => {
+                            this.state.array[a] = b;
+                            arrayBars[a].style.height = `${b/10}vh`;
+                        }, i*this.state.animDelay));
+                        break;
+                    case "swap":
+                        this.timeouts.push(setTimeout(() => {
+                            let x = this.state.array[a]; this.state.array[a] = this.state.array[b]; this.state.array[b] = x;
+                            arrayBars[a].style.height = `${this.state.array[a]/10}vh`;
+                            arrayBars[b].style.height = `${this.state.array[b]/10}vh`;
+                        }, i*this.state.animDelay));
+                        break;
+                    case "focus":
+                        this.timeouts.push(setTimeout(() => {
+                            for(let j = 0; j < arrayBars.length; j++)
+                            {
+                                if(a <= j && j <= b) arrayBars[j].style.opacity = `100%`;
+                                else arrayBars[j].style.opacity = `30%`;
+                            }
+                        }, i*this.state.animDelay));
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         this.timeouts.push(this.timeout = setTimeout(() => {
             this.setState({btnActive: true});
         }, this.state.anim.length*this.state.animDelay));
-        
     }
 
     bubbleSort = () => {
         this.setState({anim: [], btnActive: false});
-        sortingAlgorithms.bubbleSort(this.state.array.slice(), this.state.anim, this.decreasing);
+        algos.bubbleSort(this.state.array.slice(), this.state.anim, this.decreasing);
         this.playAnimations();
     }
 
     mergeSort = () => {
         this.setState({anim: [], btnActive: false});
-        sortingAlgorithms.mergeSort(this.state.array.slice(), this.state.anim, 0, this.state.array.length-1, this.decreasing, this.showMergeFocus);
+        algos.mergeSort(this.state.array.slice(), this.state.anim, 0, this.state.array.length-1, this.decreasing, this.showMergeFocus);
         this.playAnimations();
-    }   
+    }
 
     quickSort = () => {
-        
+        this.setState({anim: [], btnActive: false});
+        algos.quickSort(this.state.array.slice(), this.state.anim, 0, this.state.array.length-1, this.decreasing, this.showQuickFocus);
+        this.playAnimations();
     }
 
     stopAlgorithm = () => {
@@ -144,8 +140,13 @@ class Sort extends Component {
         this.decreasing = event.target.checked;
     }
     
-    changedshowMergeFocus = (event) => {
+    changedShowMergeFocus = (event) => {
         this.showMergeFocus = event.target.checked;
+    }
+
+    changedShowQuickFocus = (event) => {
+        this.showQuickFocus = event.target.checked;
+        console.log(this.showQuickFocus);
     }
 
     //event for changing the animation delay
@@ -196,7 +197,8 @@ class Sort extends Component {
                     <Form>
                     <Form.Check 
                         inline
-                        type="checkbox" 
+                        type="checkbox"
+                        style={{ marginRight: 30, marginBottom: 5 }}
                         label="Sort in decreasing order"
                         onChange={this.changedDecreasing}
                         disabled={!this.state.btnActive}
@@ -211,11 +213,30 @@ class Sort extends Component {
                     >
                         <Form.Check 
                         inline
-                        type="checkbox" 
+                        type="checkbox"
+                        style={{ marginRight: 30, marginBottom: 5 }}
                         label="Show focus of merge sort"
-                        onChange={this.changedshowMergeFocus}
+                        onChange={this.changedShowMergeFocus}
                         disabled={!this.state.btnActive}
                     />
+                    </OverlayTrigger>
+
+                    <OverlayTrigger
+                        placement="right"
+                        delay={{ show: 250, hide: 400 }}
+                        overlay={<Tooltip>
+                            Highlights the segment of the array processed by each recursive call of quick sort
+                            as well as the current element being adjusted.
+                        </Tooltip>}
+                    >
+                        <Form.Check
+                            inline
+                            type="checkbox"
+                            style={{ marginRight: 30, marginBottom: 5 }}
+                            label="Show focus of quick sort"
+                            onChange={this.changedShowQuickFocus}
+                            disabled={!this.state.btnActive}
+                        />
                     </OverlayTrigger>
 
                     <Form.Group controlId="formBasicRange">

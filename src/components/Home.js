@@ -4,18 +4,7 @@ import React, { Component } from "react";
 class Home extends Component {
 
     //update state on initialization
-    state = { displayBio : false, displayScores : false };
-
-    //use setState to change state, don't directly modify state
-    //it calls render() again at the end of setState
-    toggleBio = () => {
-        this.setState({ displayBio : !this.state.displayBio });
-    }
-
-    toggleScores = () => {
-        this.setState({ displayScores : !this.state.displayScores });
-    }
-
+    //state = { displayBio : false, displayScores : false };
     render() {
         return (
             <div>
@@ -23,7 +12,7 @@ class Home extends Component {
                 <p>This is a project I made to visualize various algorithms in computer science.</p>
                 <hr/>
                 <h4>Sort</h4>
-                <p>Simulates various sorting algorithms on an array. Includes merge sort, heap sort, bubble sort, and quick sort.</p>
+                <p>Simulates various sorting algorithms on an array. Includes merge sort, bubble sort, and quick sort.</p>
                 <hr/>
                 <h4>Graph</h4>
                 <p>Simulates graph theory algorithms on a grid of nodes.</p>
