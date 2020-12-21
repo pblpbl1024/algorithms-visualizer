@@ -195,58 +195,58 @@ class Sort extends Component {
                     <Button variant="danger" disabled={this.state.btnActive} onClick={this.stopAlgorithm}>Stop Algorithm</Button>
 
                     <Form>
-                    <Form.Check 
-                        inline
-                        type="checkbox"
-                        style={{ marginRight: 30, marginBottom: 5 }}
-                        label="Sort in decreasing order"
-                        onChange={this.changedDecreasing}
-                        disabled={!this.state.btnActive}
-                    />
-                    <OverlayTrigger
-                        placement="right"
-                        delay={{ show: 250, hide: 400 }}
-                        overlay={<Tooltip>
-                        Highlights the segment of the array processed by each recursive call of merge sort
-                        as well as the current element being adjusted.
-                      </Tooltip>}
-                    >
-                        <Form.Check 
-                        inline
-                        type="checkbox"
-                        style={{ marginRight: 30, marginBottom: 5 }}
-                        label="Show focus of merge sort"
-                        onChange={this.changedShowMergeFocus}
-                        disabled={!this.state.btnActive}
-                    />
-                    </OverlayTrigger>
-
-                    <OverlayTrigger
-                        placement="right"
-                        delay={{ show: 250, hide: 400 }}
-                        overlay={<Tooltip>
-                            Highlights the segment of the array processed by each recursive call of quick sort
-                            as well as the current element being adjusted.
-                        </Tooltip>}
-                    >
                         <Form.Check
                             inline
                             type="checkbox"
                             style={{ marginRight: 30, marginBottom: 5 }}
-                            label="Show focus of quick sort"
-                            onChange={this.changedShowQuickFocus}
+                            label="Sort in decreasing order"
+                            onChange={this.changedDecreasing}
                             disabled={!this.state.btnActive}
                         />
-                    </OverlayTrigger>
+                        <OverlayTrigger
+                            placement="right"
+                            delay={{ show: 250, hide: 400 }}
+                            overlay={<Tooltip>
+                                Highlights the segment of the array processed by each recursive call of merge sort
+                                as well as the current element being adjusted.
+                            </Tooltip>}
+                        >
+                            <Form.Check
+                                inline
+                                type="checkbox"
+                                style={{ marginRight: 30, marginBottom: 5 }}
+                                label="Show focus of merge sort"
+                                onChange={this.changedShowMergeFocus}
+                                disabled={!this.state.btnActive}
+                            />
+                        </OverlayTrigger>
 
-                    <Form.Group controlId="formBasicRange">
-                        <Form.Label>Array Size: {this.state.arraySize}</Form.Label>
-                        <Form.Control disabled={!this.state.btnActive} type="range" defaultValue={this.state.arraySize} 
-                        min="10" max={this.maxArraySize} tooltip="auto" onChange = {(event) => this.changedSize(event)}/>
-                        <Form.Label>Animation Delay: {this.state.animDelay} ms</Form.Label>
-                        <Form.Control disabled={!this.state.btnActive} type="range" defaultValue={this.state.animDelay} 
-                        min="1" max="200" tooltip="auto" onChange = {(event) => this.changedDelay(event)}/>
-                    </Form.Group>
+                        <OverlayTrigger
+                            placement="right"
+                            delay={{ show: 250, hide: 400 }}
+                            overlay={<Tooltip>
+                                Highlights the segment of the array processed by each recursive call of quick sort
+                                as well as the current element being adjusted.
+                            </Tooltip>}
+                        >
+                            <Form.Check
+                                inline
+                                type="checkbox"
+                                style={{ marginRight: 30, marginBottom: 5 }}
+                                label="Show focus of quick sort"
+                                onChange={this.changedShowQuickFocus}
+                                disabled={!this.state.btnActive}
+                            />
+                        </OverlayTrigger>
+
+                        <Form.Group controlId="formBasicRange">
+                            <Form.Label>Array Size: {this.state.arraySize}</Form.Label>
+                            <Form.Control disabled={!this.state.btnActive} type="range" defaultValue={this.state.arraySize}
+                                          min="10" max={this.maxArraySize} tooltip="auto" onChange = {(event) => this.changedSize(event)}/>
+                            <Form.Label>Animation Delay: {this.state.animDelay} ms</Form.Label>
+                            <Form.Control disabled={!this.state.btnActive} type="range" defaultValue={this.state.animDelay}
+                                          min="1" max="200" tooltip="auto" onChange = {(event) => this.changedDelay(event)}/>
+                        </Form.Group>
                     </Form>
                 </div>
             </div>
