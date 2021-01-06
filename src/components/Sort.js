@@ -59,8 +59,8 @@ class Sort extends Component {
             if (colours.includes(cmd))
             {
                 this.timeouts.push(setTimeout(() => {
-                    if(a != -1) arrayBars[a].style.backgroundColor = cmd;
-                    if(b != -1) arrayBars[b].style.backgroundColor = cmd;
+                    if(a !== -1) arrayBars[a].style.backgroundColor = cmd;
+                    if(b !== -1) arrayBars[b].style.backgroundColor = cmd;
                 }, i*this.state.animDelay));
             }
             else

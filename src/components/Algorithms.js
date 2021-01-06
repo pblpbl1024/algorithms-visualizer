@@ -81,11 +81,23 @@ function partition(a, anim, l, r, dec, focus)
         anim.push(["crimson", j, r]);
         if(focus) anim.push(["lime", i+1, i+1]);
         let changed = 0;
-        if (a[j] < pivot)
+        if(dec)
         {
-            changed = 1;
-            i++; anim.push(["swap", i, j]);
-            let x = a[i]; a[i] = a[j]; a[j] = x;
+            if (a[j] > pivot)
+            {
+                changed = 1;
+                i++; anim.push(["swap", i, j]);
+                let x = a[i]; a[i] = a[j]; a[j] = x;
+            }
+        }
+        else
+        {
+            if (a[j] < pivot)
+            {
+                changed = 1;
+                i++; anim.push(["swap", i, j]);
+                let x = a[i]; a[i] = a[j]; a[j] = x;
+            }
         }
         anim.push(["lightskyblue", j, r]);
         if(focus) anim.push(["lightskyblue", i+1-changed, i+1-changed]);
