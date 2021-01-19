@@ -3,7 +3,7 @@ This is a React app I made to demonstrate how various computer science algorithm
 ## Link to website
 https://pblpbl1024.github.io/algorithms-visualizer
 
-![demogif](https://thumbs.gfycat.com/PersonalReflectingDobermanpinscher-size_restricted.gif)
+[<iframe src='https://gfycat.com/ifr/PersonalReflectingDobermanpinscher' frameborder='0' scrolling='no' allowfullscreen width='640' height='391'></iframe>]
 
 ## Sorting
 Head over to the "Sort" tab. The array is represented by a series of bars with random lenghts. 
