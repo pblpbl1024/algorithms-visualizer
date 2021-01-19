@@ -3,6 +3,8 @@ This is a React app I made to demonstrate how various computer science algorithm
 ## Link to website
 https://pblpbl1024.github.io/algorithms-visualizer
 
+![](https://gfycat.com/ifr/PersonalReflectingDobermanpinscher)
+
 ## Sorting
 Head over to the "Sort" tab. The array is represented by a series of bars with random lenghts. 
 You can adjust the number of bars, the sort direction (increasing or decreasing), the animation delay, and whether to include the focus of algorithms like merge and quick sort, which are recursive in nature.
